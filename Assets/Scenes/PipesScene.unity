@@ -128,8 +128,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 306854869}
-  - component: {fileID: 306854868}
   - component: {fileID: 306854870}
+  - component: {fileID: 306854871}
   m_Layer: 0
   m_Name: PipeManager
   m_TagString: Untagged
@@ -137,22 +137,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &306854868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 306854867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78d1ac50d60d33143985eeb91b0429a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lenX: 12
-  lenY: 10
-  lenZ: 15
-  verticalPipe: {fileID: 8836224658605347627, guid: feb287cc4f0c5b94bbd0fa3d8338876a, type: 3}
 --- !u!4 &306854869
 Transform:
   m_ObjectHideFlags: 0
@@ -180,8 +164,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a049b3ac8d0d64bac6f31873f2eadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: 0
+  lenX: 2
+  lenY: 2
+  lenZ: 2
+  settings: 1
+  pipeItems: []
   pipeModel: {fileID: 8836224658605347627, guid: feb287cc4f0c5b94bbd0fa3d8338876a, type: 3}
+  cells: 
+  count: 0
+--- !u!114 &306854871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 306854867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78d1ac50d60d33143985eeb91b0429a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  verticalPipe: {fileID: 8836224658605347627, guid: feb287cc4f0c5b94bbd0fa3d8338876a, type: 3}
+  thisPosition3D: {x: 0, y: 0, z: 0}
+  thisPosition1Dindex: 0
 --- !u!1 &347622295
 GameObject:
   m_ObjectHideFlags: 0
