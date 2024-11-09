@@ -164,14 +164,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5a049b3ac8d0d64bac6f31873f2eadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lenX: 2
-  lenY: 2
-  lenZ: 2
+  lenX: 8
+  lenY: 6
+  lenZ: 4
   settings: 1
   pipeItems: []
-  pipeModel: {fileID: 8836224658605347627, guid: feb287cc4f0c5b94bbd0fa3d8338876a, type: 3}
+  hollowPipe: {fileID: 3293425258478642624, guid: c261045b3d52e484d97d81149861bdf8, type: 3}
+  bendPipe: {fileID: 5231761980395062812, guid: 4b4adfb45c0ea4d468db03f12fed71b8, type: 3}
+  bulbPipe: {fileID: 8535565114268663042, guid: af4dcbd515ded4d4ca53dae55eec887c, type: 3}
+  PipeTypes: []
   cells: 
   count: 0
+  currentPoint: {x: 0, y: 0, z: 0}
+  nextPoint: {x: 0, y: 0, z: 0}
+  pipingPossible: 1
 --- !u!114 &306854871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +190,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78d1ac50d60d33143985eeb91b0429a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalPipe: {fileID: 8836224658605347627, guid: feb287cc4f0c5b94bbd0fa3d8338876a, type: 3}
   thisPosition3D: {x: 0, y: 0, z: 0}
   thisPosition1Dindex: 0
 --- !u!1 &347622295

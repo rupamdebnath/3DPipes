@@ -5,9 +5,6 @@ using Random = UnityEngine.Random;
 
 public class PipeItem : MonoBehaviour
 {
-
-    [SerializeField] private GameObject verticalPipe;
-
     //Manager that manages the design of pipes
     private PipeManager pipeManager;
 
@@ -33,11 +30,14 @@ public class PipeItem : MonoBehaviour
 
     //coroutine to run recursively
     IEnumerator WaitAndSpawn()
-    {
-        while (true)
+    {        
+        while (pipeManager.pipingPossible)
         {
             pipeManager.PlacePipe();
-            yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSeconds(0.05f);
+            //pipingPossible check for breaking the loop
+            if (pipeManager.pipingPossible == false)
+                break;
         }
 
         //SetNewPipePosition ..
@@ -47,8 +47,12 @@ public class PipeItem : MonoBehaviour
     void OnDisable()
     {
         StopAllCoroutines();
-    }
-
-    //Get the position for new Pipe using offset calculations from a given 3D point
-    
+    }    
 }
+
+/*public enum PipeType
+{
+    BendPipe,
+    HollowPipe,
+    BulbPipe
+}*/
