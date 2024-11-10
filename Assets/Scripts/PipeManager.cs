@@ -31,39 +31,22 @@ public class PipeManager : MonoBehaviour
     //Initialization
     public void Initialize()
     {
-        //currentPipe = MakeNewPipe(new Vector3Int(lenX/2,lenY/2,lenZ/2));
-        //currentPoint = new Vector3Int(Random.Range(0, lenX), Random.Range(0, lenY), Random.Range(0, lenZ));
-        //currentPoint = new Vector3Int((int)lenX / 2, (int)lenY / 2, (int)lenZ / 2);
+        pipingPossible = true;
         CalculateHalfDistance(lenX, lenY, lenZ);
         cells = new int[lenX * lenY * lenZ];
-        //pdirection = Vector3Int.zero;
         pipeItems = new List<GameObject>();
-        //nextpoint = SelectPoint(currentPoint);
         orgDirection = Vector3Int.zero;
+        currentPoint = GetNewPositionForCurrent();
+        MakeNewPipe(currentPoint, currentPoint);
+        Set1DPositionValueOccupied(currentPoint);
     }
 
     //PlacePipe function to be called for instantiating a model
     public void PlacePipe()
     {
-/*        if (count >= cells.Length)
-            return;*/
         nextpoint = SelectPoint(currentPoint);
         Debug.Log("Next" + (nextpoint));
         Debug.Log("NextDiff" + (currentPoint - nextpoint));
-        while (nextpoint.x == -1)
-        {
-            MakeNewPipe(currentPoint, currentPoint);
-            currentPoint = CheckNewPipeRequirements();
-
-            //break
-            if (currentPoint.x == -1)
-            {
-                pipingPossible = false;
-                break;
-            }
-            Set1DPositionValueOccupied(currentPoint);
-            nextpoint = SelectPoint(currentPoint);
-        }
 
         if (pipingPossible)
         {
@@ -84,7 +67,7 @@ public class PipeManager : MonoBehaviour
 
     void MakeNewPipe(Vector3Int cpoint, Vector3Int npoint)
     {
-        GameObject pipetype = hollowPipe;
+        GameObject pipetype = new GameObject();
         Vector3Int nDirection = npoint - cpoint;
         Vector3 npos = new Vector3(settings * (cpoint.x - halfX), settings * (cpoint.y - halfY), settings * (cpoint.z - halfZ));
 
@@ -102,28 +85,32 @@ public class PipeManager : MonoBehaviour
             return;
         }
 
-        //No change in direction
-        if (nDirection.x * orgDirection.x + nDirection.y * orgDirection.y + nDirection.z * orgDirection.z > 0.9)
+        // Straight pipe if direction remains the same
+        if (Vector3.Dot(((Vector3)nDirection).normalized, ((Vector3)orgDirection).normalized) > 0.9f)
         {
-            pipetype = Instantiate(hollowPipe, npos, Quaternion.FromToRotation(Vector3Int.forward, orgDirection), this.transform);
-            pipetype.transform.localPosition = npos;
-            return;
+            pipetype = Instantiate(hollowPipe, npos, Quaternion.FromToRotation(Vector3Int.forward, orgDirection), transform);
         }
+        else
+        {
+            // Curved pipe for a directional change
+            Vector3Int curveDir = nDirection - orgDirection;
+            //Vector3Int curveDir = new Vector3Int(Mathf.Clamp(nDirection.x - orgDirection.x, -1, 1),Mathf.Clamp(nDirection.y - orgDirection.y, -1, 1),Mathf.Clamp(nDirection.z - orgDirection.z, -1, 1));
+            Quaternion rotation = Quaternion.LookRotation(curveDir, Vector3.up);
+            Debug.Log("CurvePOint" + curveDir.x + curveDir.y + curveDir.z);
+            if (curveDir.y == 0)
+            {
+                if(curveDir.x == -2 || curveDir.z == -2)
+                {
 
-        // Direction change, bend Pipe formation
-        Vector3Int pipeDir = nDirection - orgDirection;
-        Quaternion bendPipeRot = Quaternion.LookRotation(pipeDir, Vector3.up);
-        if (pipeDir.y == 0)
-        {
-            bendPipeRot *= Quaternion.AngleAxis(90, Vector3.forward);
-            pipetype = Instantiate(bendPipe, npos, bendPipeRot, this.transform);
-            pipetype.transform.localPosition = npos;
-            //Pipes.Add(newPipe);
+                }
+                rotation *= Quaternion.AngleAxis(90, Vector3.forward);
+            }
+
+            pipetype = Instantiate(bendPipe, npos, rotation, transform);
         }
-        orgDirection = nDirection;
-        //GameObject newPipe = Instantiate(pipetype, this.transform);
-        //newPipe.transform.position = new Vector3(npoint.x, npoint.y, npoint.z);
-        
+        pipeItems.Add(pipetype);
+        pipetype.transform.localPosition = npos;
+        orgDirection = nDirection;       
     }
 
     //Middle position
@@ -141,7 +128,6 @@ public class PipeManager : MonoBehaviour
         int xOff = vPos.x;
         int yOff = vPos.y * lenX;
         int zOff = vPos.z * lenX * lenY;
-        Debug.Log("Offset" + xOff + yOff + zOff);
         return cells[xOff + yOff + zOff];
     }
     //Set the position value for new Pipe to 1
@@ -152,7 +138,6 @@ public class PipeManager : MonoBehaviour
         int zOff = vPos.z * lenX * lenY;
 
         cells[xOff + yOff + zOff] = 1;
-        Debug.Log("cells" + (xOff + yOff + zOff));
     }
     //Using current point select a new point of pipe placement
     public Vector3Int SelectPoint(Vector3Int currentPos)
@@ -209,9 +194,10 @@ public class PipeManager : MonoBehaviour
             bulbPipe, pos, Quaternion.FromToRotation(Vector3Int.forward, dir), this.transform
         );
         newbulbPipe.transform.localPosition = pos;
+        pipeItems.Add(newbulbPipe);
     }
 
-    private Vector3Int CheckNewPipeRequirements()
+    private Vector3Int GetNewPositionForCurrent()
     {
             // Check if there are spots available in positions
             bool spotsAvailable = false;
@@ -242,12 +228,12 @@ public class PipeManager : MonoBehaviour
             }
 
             // Calculate the new pipe position and return it
-            Vector3Int ret = Vector3Int.zero;
-            ret.z = sIndex / (lenX * lenY);
-            sIndex -= ret.z * lenX * lenY;
-            ret.y = sIndex / (lenX);
-            ret.x = sIndex - (ret.y * lenX);
-            return ret;
+            Vector3Int posvalue = Vector3Int.zero;
+            posvalue.z = sIndex / (lenX * lenY);
+            sIndex -= posvalue.z * lenX * lenY;
+            posvalue.y = sIndex / (lenX);
+            posvalue.x = sIndex - (posvalue.y * lenX);
+            return posvalue;
         }
 }
 
