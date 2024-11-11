@@ -33,10 +33,6 @@ public class PipeManager : MonoBehaviour
     private int colorIndex;
     //Initialization
 
-    private void Awake()
-    {
-        //pipeItem = GetComponent<PipeItem>();
-    }
     public void Initialize()
     {
         pipingPossible = true;
@@ -256,6 +252,15 @@ public class PipeManager : MonoBehaviour
         hollowPipe.GetComponent<MeshRenderer>().material = m;
         bendPipe.GetComponent<MeshRenderer>().material = m;
         bulbPipe.GetComponent<MeshRenderer>().material = m;
+    }
+
+    //Destroy all pipes
+    public void DestroyAllPipes()
+    {
+        foreach(GameObject item in pipeItems)
+        {
+            Destroy(item);
+        }
     }
 }
 

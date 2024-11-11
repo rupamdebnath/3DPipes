@@ -38,18 +38,26 @@ public class PipeItem : MonoBehaviour
             }
                 
         }
+        yield return new WaitForSeconds(1f);
         Debug.Log("Finished");
         pipeManager.currentPoint = pipeManager.GetNewPositionForCurrent();
         if (pipeManager.tempColorList.Count > 0 && pipeManager.CheckifSpotAvailable(pipeManager.currentPoint))
         {
+            pipeManager.pipingPossible = true;
+            pipeManager.orgDirection = Vector3Int.zero;
             int colorIndex = Random.Range(0, pipeManager.tempColorList.Count - 1);
-            pipeManager.SetColour(pipeManager.colorMaterials[colorIndex]);
+            pipeManager.SetColour(pipeManager.tempColorList[colorIndex]);
             pipeManager.tempColorList.RemoveAt(colorIndex);
 
-            //pipeManager.MakeNewPipe(pipeManager.currentPoint, pipeManager.nextpoint);
-            //pipeManager.Set1DPositionValueOccupied(pipeManager.currentPoint);
-            pipeManager.pipingPossible = true;
+            pipeManager.MakeNewPipe(pipeManager.currentPoint, pipeManager.currentPoint);
+            pipeManager.Set1DPositionValueOccupied(pipeManager.currentPoint);
             StartCoroutine(WaitAndSpawn());
+        }
+        else
+        {
+            yield return new WaitForSeconds(2f);
+            pipeManager.DestroyAllPipes();
+            Restart();
         }
     }
 
@@ -57,4 +65,9 @@ public class PipeItem : MonoBehaviour
     {
         StopAllCoroutines();
     }    
+
+    void Restart()
+    {
+        Initialize();
+    }
 }
