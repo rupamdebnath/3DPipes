@@ -38,6 +38,19 @@ public class PipeItem : MonoBehaviour
             }
                 
         }
+        Debug.Log("Finished");
+        pipeManager.currentPoint = pipeManager.GetNewPositionForCurrent();
+        if (pipeManager.tempColorList.Count > 0 && pipeManager.CheckifSpotAvailable(pipeManager.currentPoint))
+        {
+            int colorIndex = Random.Range(0, pipeManager.tempColorList.Count - 1);
+            pipeManager.SetColour(pipeManager.colorMaterials[colorIndex]);
+            pipeManager.tempColorList.RemoveAt(colorIndex);
+
+            //pipeManager.MakeNewPipe(pipeManager.currentPoint, pipeManager.nextpoint);
+            //pipeManager.Set1DPositionValueOccupied(pipeManager.currentPoint);
+            pipeManager.pipingPossible = true;
+            StartCoroutine(WaitAndSpawn());
+        }
     }
 
     void OnDisable()

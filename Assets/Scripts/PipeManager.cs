@@ -16,8 +16,6 @@ public class PipeManager : MonoBehaviour
     public GameObject bendPipe;
     public GameObject bulbPipe;
 
-    //PipeItem Object
-    public PipeItem pipeItem;
 
     //Array of integers for tracking the position of every cell
     public int[] cells;
@@ -31,13 +29,13 @@ public class PipeManager : MonoBehaviour
 
     //Materials
     public Material[] colorMaterials;
-    private List<Material> tempColorList;
+    public List<Material> tempColorList;
     private int colorIndex;
     //Initialization
 
     private void Awake()
     {
-        pipeItem = GetComponent<PipeItem>();
+        //pipeItem = GetComponent<PipeItem>();
     }
     public void Initialize()
     {
@@ -71,19 +69,19 @@ public class PipeManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Finished");
-            colorIndex = Random.Range(0, tempColorList.Count - 1);
-            SetColour(colorMaterials[colorIndex]);
-            currentPoint = GetNewPositionForCurrent();
-            MakeNewPipe(currentPoint, currentPoint);
-            Set1DPositionValueOccupied(currentPoint);
-            pipingPossible = true;
-            StartCoroutine(pipeItem.WaitAndSpawn());
+            // When no more pipes can be placed, create the end bulb at the last valid position
+            CreateEndBulbPipe(currentPoint, -orgDirection);
         }
+    }
+    // New function to create the end bulb pipe
+    private void CreateEndBulbPipe(Vector3Int position, Vector3Int direction)
+    {
+        Vector3 endPos = new Vector3(settings * (position.x - halfX), settings * (position.y - halfY), settings * (position.z - halfZ));
+        MakeBulbPipe(endPos, direction);
     }
 
     //Check if the spot is empty or full
-    bool CheckifSpotAvailable(Vector3Int vpos)
+    public bool CheckifSpotAvailable(Vector3Int vpos)
     {
         if(Get1DPositionValue(vpos) == 0 && vpos.x != -1 && vpos.y != -1 && vpos.z !=-1)
             return true;
@@ -91,23 +89,17 @@ public class PipeManager : MonoBehaviour
             return false;
     }
 
-    void MakeNewPipe(Vector3Int cpoint, Vector3Int npoint)
+    public void MakeNewPipe(Vector3Int cpoint, Vector3Int npoint)
     {
         GameObject pipetype = new GameObject();
         Vector3Int nDirection = npoint - cpoint;
         Vector3 npos = new Vector3(settings * (cpoint.x - halfX), settings * (cpoint.y - halfY), settings * (cpoint.z - halfZ));
 
-        //first and last pipe
+        //first pipe
         if (orgDirection.magnitude < 0.1f)
         {
             orgDirection = nDirection;
             MakeBulbPipe(npos, orgDirection);
-            return;
-        }
-        if (nDirection.magnitude < 0.1f)
-        {
-            MakeBulbPipe(npos, -orgDirection);
-            orgDirection = Vector3Int.zero;
             return;
         }
 
@@ -124,10 +116,6 @@ public class PipeManager : MonoBehaviour
             Debug.Log("CurvePOint" + curveDir.x + curveDir.y + curveDir.z);
             if (curveDir.y == 0)
             {
-                if(curveDir.x == -2 || curveDir.z == -2)
-                {
-
-                }
                 rotation *= Quaternion.AngleAxis(90, Vector3.forward);
             }
 
@@ -222,7 +210,7 @@ public class PipeManager : MonoBehaviour
         pipeItems.Add(newbulbPipe);
     }
 
-    private Vector3Int GetNewPositionForCurrent()
+    public Vector3Int GetNewPositionForCurrent()
     {
         // Check if there are spots available in positions
         bool spotsAvailable = false;
@@ -264,7 +252,6 @@ public class PipeManager : MonoBehaviour
     //Set Color function
     public void SetColour(Material m)
     {
-
         // Assign the new materials to each pipe type
         hollowPipe.GetComponent<MeshRenderer>().material = m;
         bendPipe.GetComponent<MeshRenderer>().material = m;
