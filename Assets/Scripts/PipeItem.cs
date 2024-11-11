@@ -38,7 +38,7 @@ public class PipeItem : MonoBehaviour
             }
                 
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.05f);
         Debug.Log("Finished");
         pipeManager.currentPoint = pipeManager.GetNewPositionForCurrent();
         if (pipeManager.tempColorList.Count > 0 && pipeManager.CheckifSpotAvailable(pipeManager.currentPoint))
@@ -55,7 +55,7 @@ public class PipeItem : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
             pipeManager.DestroyAllPipes();
             Restart();
         }
