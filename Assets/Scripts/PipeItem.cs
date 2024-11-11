@@ -8,10 +8,6 @@ public class PipeItem : MonoBehaviour
     //Manager that manages the design of pipes
     private PipeManager pipeManager;
 
-    //Pipes position details
-    public Vector3Int thisPosition3D;
-    public int thisPosition1Dindex;
-
     //Initialization scripts
     void OnEnable()
     {
@@ -24,12 +20,12 @@ public class PipeItem : MonoBehaviour
         //GameObject newItem;
         pipeManager.Initialize();
         //newItem = Instantiate(verticalPipe, new Vector3(0f, 0f, 0f), Quaternion.identity);
- 
+        //pipeManager.SetColour();
         StartCoroutine(WaitAndSpawn());
     }
 
     //coroutine to run recursively
-    IEnumerator WaitAndSpawn()
+    public IEnumerator WaitAndSpawn()
     {        
         while (pipeManager.pipingPossible)
         {
@@ -37,11 +33,11 @@ public class PipeItem : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
             //pipingPossible check for breaking the loop
             if (pipeManager.pipingPossible == false)
+            {                
                 break;
+            }
+                
         }
-
-        //SetNewPipePosition ..
-        //SetNewPipePosition(newRandomPos);
     }
 
     void OnDisable()
@@ -49,10 +45,3 @@ public class PipeItem : MonoBehaviour
         StopAllCoroutines();
     }    
 }
-
-/*public enum PipeType
-{
-    BendPipe,
-    HollowPipe,
-    BulbPipe
-}*/

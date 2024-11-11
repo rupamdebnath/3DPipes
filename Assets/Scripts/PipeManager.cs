@@ -16,8 +16,8 @@ public class PipeManager : MonoBehaviour
     public GameObject bendPipe;
     public GameObject bulbPipe;
 
-    //Types of pipes
-    public List<GameObject> PipeTypes;
+    //PipeItem Object
+    public PipeItem pipeItem;
 
     //Array of integers for tracking the position of every cell
     public int[] cells;
@@ -28,10 +28,25 @@ public class PipeManager : MonoBehaviour
 
     //Check
     public bool pipingPossible;
+
+    //Materials
+    public Material[] colorMaterials;
+    private List<Material> tempColorList;
+    private int colorIndex;
     //Initialization
+
+    private void Awake()
+    {
+        pipeItem = GetComponent<PipeItem>();
+    }
     public void Initialize()
     {
         pipingPossible = true;
+        tempColorList = new List<Material>();
+        tempColorList.AddRange(colorMaterials);
+        colorIndex = Random.Range(0, tempColorList.Count - 1);
+        SetColour(colorMaterials[colorIndex]);
+        tempColorList.RemoveAt(colorIndex);
         CalculateHalfDistance(lenX, lenY, lenZ);
         cells = new int[lenX * lenY * lenZ];
         pipeItems = new List<GameObject>();
@@ -53,6 +68,17 @@ public class PipeManager : MonoBehaviour
             MakeNewPipe(currentPoint, nextpoint);
             currentPoint = nextpoint;
             Set1DPositionValueOccupied(currentPoint);
+        }
+        else
+        {
+            Debug.Log("Finished");
+            colorIndex = Random.Range(0, tempColorList.Count - 1);
+            SetColour(colorMaterials[colorIndex]);
+            currentPoint = GetNewPositionForCurrent();
+            MakeNewPipe(currentPoint, currentPoint);
+            Set1DPositionValueOccupied(currentPoint);
+            pipingPossible = true;
+            StartCoroutine(pipeItem.WaitAndSpawn());
         }
     }
 
@@ -94,7 +120,6 @@ public class PipeManager : MonoBehaviour
         {
             // Curved pipe for a directional change
             Vector3Int curveDir = nDirection - orgDirection;
-            //Vector3Int curveDir = new Vector3Int(Mathf.Clamp(nDirection.x - orgDirection.x, -1, 1),Mathf.Clamp(nDirection.y - orgDirection.y, -1, 1),Mathf.Clamp(nDirection.z - orgDirection.z, -1, 1));
             Quaternion rotation = Quaternion.LookRotation(curveDir, Vector3.up);
             Debug.Log("CurvePOint" + curveDir.x + curveDir.y + curveDir.z);
             if (curveDir.y == 0)
@@ -199,41 +224,51 @@ public class PipeManager : MonoBehaviour
 
     private Vector3Int GetNewPositionForCurrent()
     {
-            // Check if there are spots available in positions
-            bool spotsAvailable = false;
-            foreach (int val in cells)
+        // Check if there are spots available in positions
+        bool spotsAvailable = false;
+        foreach (int val in cells)
+        {
+            if (val == 0)
             {
-                if (val == 0)
-                {
-                    spotsAvailable = true;
-                    break;
-                }
+                spotsAvailable = true;
+                break;
             }
-
-            // If we can't continue building a new pipe, return
-            if (!spotsAvailable)
-            {
-                return new Vector3Int(-1,-1,-1);
-            }
-
-            // Find a spot to begin the next pipe
-            int sIndex = Random.Range(0, cells.Length);
-            while (cells[sIndex] == 1)
-            {
-                sIndex++;
-                if (sIndex >= cells.Length)
-                {
-                    sIndex = 0;
-                }
-            }
-
-            // Calculate the new pipe position and return it
-            Vector3Int posvalue = Vector3Int.zero;
-            posvalue.z = sIndex / (lenX * lenY);
-            sIndex -= posvalue.z * lenX * lenY;
-            posvalue.y = sIndex / (lenX);
-            posvalue.x = sIndex - (posvalue.y * lenX);
-            return posvalue;
         }
+
+        // If we can't continue building a new pipe, return
+        if (!spotsAvailable)
+        {
+            return new Vector3Int(-1,-1,-1);
+        }
+
+        // Find a spot to begin the next pipe
+        int sIndex = Random.Range(0, cells.Length);
+        while (cells[sIndex] == 1)
+        {
+            sIndex++;
+            if (sIndex >= cells.Length)
+            {
+                sIndex = 0;
+            }
+        }
+
+        // Calculate the new pipe position and return it
+        Vector3Int posvalue = Vector3Int.zero;
+        posvalue.z = sIndex / (lenX * lenY);
+        sIndex -= posvalue.z * lenX * lenY;
+        posvalue.y = sIndex / (lenX);
+        posvalue.x = sIndex - (posvalue.y * lenX);
+        return posvalue;
+    }
+
+    //Set Color function
+    public void SetColour(Material m)
+    {
+
+        // Assign the new materials to each pipe type
+        hollowPipe.GetComponent<MeshRenderer>().material = m;
+        bendPipe.GetComponent<MeshRenderer>().material = m;
+        bulbPipe.GetComponent<MeshRenderer>().material = m;
+    }
 }
 

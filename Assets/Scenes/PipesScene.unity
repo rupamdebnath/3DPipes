@@ -178,7 +178,15 @@ MonoBehaviour:
   currentPoint: {x: 0, y: 0, z: 0}
   orgDirection: {x: 0, y: 0, z: 0}
   nextpoint: {x: 0, y: 0, z: 0}
+  tempList: []
   pipingPossible: 1
+  colorMaterials:
+  - {fileID: 2100000, guid: 6af75ee08bc998c408f536949b01f629, type: 2}
+  - {fileID: 2100000, guid: 35d1a5ca3b6d39a46a87f1c2a62ce573, type: 2}
+  - {fileID: 2100000, guid: 33682152d6f99f0488f4bf1dcb3fcb44, type: 2}
+  - {fileID: 2100000, guid: cdc640e8b30fe8744be53f9990f84e8f, type: 2}
+  - {fileID: 2100000, guid: 6fbf9f0482cdd3646baded466ec3e94a, type: 2}
+  - {fileID: 2100000, guid: 97d6f1efe8c518a45aa944e3bffd0d93, type: 2}
 --- !u!114 &306854871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,8 +199,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78d1ac50d60d33143985eeb91b0429a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisPosition3D: {x: 0, y: 0, z: 0}
-  thisPosition1Dindex: 0
 --- !u!1 &347622295
 GameObject:
   m_ObjectHideFlags: 0

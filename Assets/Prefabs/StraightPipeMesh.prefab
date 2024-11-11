@@ -51,7 +51,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: c81b458b2f146a14bb76b2d55c8e7bf2, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 6fbf9f0482cdd3646baded466ec3e94a, type: 2}
+      objectReference: {fileID: 2100000, guid: cdc640e8b30fe8744be53f9990f84e8f, type: 2}
     - target: {fileID: 919132149155446097, guid: c81b458b2f146a14bb76b2d55c8e7bf2, type: 3}
       propertyPath: m_Name
       value: StraightPipeMesh
